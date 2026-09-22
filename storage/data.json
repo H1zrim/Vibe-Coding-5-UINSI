@@ -1,0 +1,65 @@
+{
+    "users": [
+        {
+            "id": "u-pengurus",
+            "username": "pengurus",
+            "password": "$2y$12$hKXGAcE4gD.Jl1JsS.Lykeua2EP.keg3dbUOh12FvO8\/z\/fv7ue12",
+            "name": "Pengurus Default",
+            "role": "pengurus",
+            "nim": null
+        }
+    ],
+    "books": [
+        {
+            "id": "BK-001",
+            "title": "Algoritma & Struktur Data Lanjut",
+            "author": "Rinaldi Munir",
+            "category": "Ilmu Komputer",
+            "year": 2022,
+            "status": "Tersedia"
+        },
+        {
+            "id": "BK-002",
+            "title": "Pemrograman Web Modern Berbasis Komponen",
+            "author": "Budi Raharjo",
+            "category": "Teknologi",
+            "year": 2023,
+            "status": "Tersedia"
+        },
+        {
+            "id": "BK-003",
+            "title": "Basis Data & Perancangan Sistem Relasional",
+            "author": "Fathansyah",
+            "category": "Basis Data",
+            "year": 2021,
+            "status": "Dipinjam"
+        },
+        {
+            "id": "BK-004",
+            "title": "Rekayasa Perangkat Lunak: Pendekatan Praktisi",
+            "author": "Roger S. Pressman",
+            "category": "Rekayasa",
+            "year": 2020,
+            "status": "Tersedia"
+        },
+        {
+            "id": "BK-005",
+            "title": "Pengantar Kecerdasan Buatan dan Robotika",
+            "author": "Suyanto",
+            "category": "Kecerdasan Buatan",
+            "year": 2024,
+            "status": "Tersedia"
+        }
+    ],
+    "borrowings": [
+        {
+            "id": "TRX-2026-001",
+            "bookId": "BK-003",
+            "userId": "u-mhs1",
+            "borrowDate": "2026-09-01",
+            "dueDate": "2026-09-08",
+            "returnDate": null,
+            "status": "Dipinjam"
+        }
+    ]
+}
