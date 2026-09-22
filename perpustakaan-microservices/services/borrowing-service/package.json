@@ -1,0 +1,9 @@
+{
+  "name": "borrowing-service",
+  "version": "1.0.0",
+  "description": "Microservice: transaksi peminjaman & pengembalian buku SIPERPU",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

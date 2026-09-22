@@ -1,0 +1,9 @@
+{
+  "name": "book-service",
+  "version": "1.0.0",
+  "description": "Microservice: katalog & CRUD buku SIPERPU",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "TRX-2026-001",
+    "bookId": "BK-003",
+    "userId": "u-mhs1",
+    "borrowDate": "2026-09-01",
+    "dueDate": "2026-09-08",
+    "returnDate": null,
+    "status": "Dipinjam"
+  }
+]

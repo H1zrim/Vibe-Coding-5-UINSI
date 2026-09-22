@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPERPU - Sistem Peminjaman Buku Perpustakaan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>SIPERPU</h1>
+          <span>Sistem Informasi Perpustakaan Kampus</span>
+        </div>
+      </div>
+
+      <!-- User Session Control (Logged in state) -->
+      <div id="user-nav-profile" class="user-nav-profile hidden">
+        <div class="user-badge-info">
+          <span id="nav-user-name" class="user-name">Nama Pengguna</span>
+          <span id="nav-user-role" class="user-role-badge">Role</span>
+        </div>
+        <button id="btn-logout" class="btn btn-outline-danger btn-sm" title="Keluar dari sistem">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Keluar / Ganti Peran
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-container">
+
+    <!-- 1. LOGIN & ROLE SWITCHER SECTION -->
+    <section id="auth-section" class="auth-section">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-icon-wrapper">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <h2>Masuk ke Sistem Perpustakaan</h2>
+          <p>Pilih peran Anda atau gunakan akun simulasi cepat di bawah untuk langsung mencoba prototipe.</p>
+        </div>
+
+        <!-- Quick Demo Switcher -->
+        <div class="demo-role-box">
+          <p class="demo-title">Pilihan Cepat Masuk (Simulasi Akun Demo):</p>
+          <div class="demo-buttons-grid">
+            <button type="button" class="btn-demo" data-user="admin">
+              <div class="demo-role-tag role-admin">Pengurus (Admin)</div>
+              <strong>Bambang Sudarsono</strong>
+              <span>Akses penuh: Kelola Buku & Transaksi</span>
+            </button>
+            <button type="button" class="btn-demo" data-user="mhs1">
+              <div class="demo-role-tag role-student">Mahasiswa 1</div>
+              <strong>Budi Santoso</strong>
+              <span>NIM: 210001001 (Ada riwayat pinjam)</span>
+            </button>
+            <button type="button" class="btn-demo" data-user="mhs2">
+              <div class="demo-role-tag role-student">Mahasiswa 2</div>
+              <strong>Siti Rahma</strong>
+              <span>NIM: 210001002 (Akun baru / kuota penuh)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="divider"><span>atau masuk dengan kredensial</span></div>
+
+        <!-- Manual Login Form -->
+        <form id="login-form" class="login-form">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" class="form-control" placeholder="admin / mhs1 / mhs2" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="Password default: 123" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Masuk ke Dashboard</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. PENGURUS (ADMIN) DASHBOARD -->
+    <section id="admin-section" class="role-section hidden">
+      <!-- Welcome & Action Header -->
+      <div class="dashboard-header">
+        <div>
+          <h2>Panel Pengurus Perpustakaan</h2>
+          <p class="subtitle">Kelola master buku perpustakaan dan pantau status transaksi peminjaman mahasiswa.</p>
+        </div>
+        <div class="header-actions">
+          <button id="btn-open-add-book" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Tambah Buku Baru
+          </button>
+          <button id="btn-reset-demo" class="btn btn-outline-secondary" title="Kembalikan data ke awal">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M3 2v6h6"></path>
+              <path d="M21 12A9 9 0 0 0 6 5.3L3 8"></path>
+              <path d="M21 22v-6h-6"></path>
+              <path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"></path>
+            </svg>
+            Reset Data Demo
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon icon-blue">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Koleksi Buku</span>
+            <strong id="stat-total-books" class="stat-number">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon icon-green">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Buku Tersedia</span>
+            <strong id="stat-available-books" class="stat-number">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon icon-amber">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Sedang Dipinjam</span>
+            <strong id="stat-borrowed-books" class="stat-number">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon icon-purple">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Transaksi</span>
+            <strong id="stat-total-borrowings" class="stat-number">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab Switcher -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="admin-books-tab">
+          Katalog & Manajemen Buku
+        </button>
+        <button class="tab-btn" data-tab="admin-borrowings-tab">
+          Data Peminjaman Mahasiswa
+        </button>
+      </div>
+
+      <!-- Tab 1: Book Management (CRUD) -->
+      <div id="admin-books-tab" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-bar">
+            <h3>Daftar Seluruh Buku</h3>
+            <div class="search-filter-box">
+              <input type="text" id="admin-book-search" class="form-control" placeholder="Cari judul, pengarang, ID...">
+              <select id="admin-book-category-filter" class="form-control">
+                <option value="ALL">Semua Kategori</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Buku</th>
+                  <th>Judul Buku</th>
+                  <th>Pengarang</th>
+                  <th>Kategori</th>
+                  <th>Tahun</th>
+                  <th>Status</th>
+                  <th class="text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-books-tbody">
+                <!-- Populated via script.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Borrowing Records Management -->
+      <div id="admin-borrowings-tab" class="tab-pane hidden">
+        <div class="card">
+          <div class="card-header-bar">
+            <h3>Seluruh Catatan Peminjaman & Pengembalian</h3>
+            <div class="search-filter-box">
+              <select id="admin-borrowing-status-filter" class="form-control">
+                <option value="ALL">Semua Status</option>
+                <option value="Dipinjam">Sedang Dipinjam</option>
+                <option value="Dikembalikan">Sudah Dikembalikan</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Transaksi</th>
+                  <th>Judul Buku</th>
+                  <th>Mahasiswa</th>
+                  <th>Tgl Pinjam</th>
+                  <th>Batas Kembali (7 Hari)</th>
+                  <th>Tgl Dikembalikan</th>
+                  <th>Status</th>
+                  <th class="text-center">Aksi Pengurus</th>
+                </tr>
+              </thead>
+              <tbody id="admin-borrowings-tbody">
+                <!-- Populated via script.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MAHASISWA (STUDENT) DASHBOARD -->
+    <section id="student-section" class="role-section hidden">
+      <!-- Student Info & Borrow Limit Quota Meter -->
+      <div class="student-hero-banner">
+        <div class="student-welcome">
+          <h2>Katalog & Peminjaman Mahasiswa</h2>
+          <p>Selamat datang, <strong id="student-display-name">Mahasiswa</strong> (<span id="student-display-nim">NIM</span>). Silakan pilih buku untuk dipinjam.</p>
+        </div>
+        <div class="borrow-quota-card">
+          <div class="quota-header">
+            <span>Batas Peminjaman Aktif</span>
+            <span id="quota-count-badge" class="badge-quota">0 / 3 Buku</span>
+          </div>
+          <div class="quota-progress-track">
+            <div id="quota-progress-bar" class="quota-progress-fill" style="width: 0%;"></div>
+          </div>
+          <p id="quota-note" class="quota-note">Sisa kuota peminjaman Anda: 3 buku.</p>
+        </div>
+      </div>
+
+      <!-- Student Tabs -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="student-catalog-tab">
+          Katalog Buku Perpustakaan
+        </button>
+        <button class="tab-btn" data-tab="student-my-borrowings-tab">
+          Riwayat & Peminjaman Saya (<span id="student-my-borrow-count">0</span>)
+        </button>
+      </div>
+
+      <!-- Tab 1: Book Catalog (For Borrowing) -->
+      <div id="student-catalog-tab" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-bar">
+            <h3>Daftar Buku Tersedia</h3>
+            <div class="search-filter-box">
+              <input type="text" id="student-book-search" class="form-control" placeholder="Cari judul, pengarang...">
+              <select id="student-book-category-filter" class="form-control">
+                <option value="ALL">Semua Kategori</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="student-books-grid" class="books-card-grid">
+            <!-- Book cards rendered via script.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Student's Personal Borrowing History -->
+      <div id="student-my-borrowings-tab" class="tab-pane hidden">
+        <div class="card">
+          <div class="card-header-bar">
+            <h3>Riwayat Peminjaman Pribadi</h3>
+            <p class="subtitle">Daftar buku yang sedang Anda pinjam maupun yang sudah dikembalikan.</p>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Transaksi</th>
+                  <th>Judul Buku</th>
+                  <th>Tanggal Pinjam</th>
+                  <th>Batas Waktu Pengembalian</th>
+                  <th>Tanggal Kembali</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="student-borrowings-tbody">
+                <!-- Populated via script.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: ADD / EDIT BOOK (ADMIN) -->
+  <div id="modal-book" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modal-book-title">Tambah Buku Baru</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-book-modal">&times;</button>
+      </div>
+      <form id="form-book">
+        <div class="modal-body">
+          <input type="hidden" id="book-edit-id">
+          
+          <div class="form-group">
+            <label for="book-title">Judul Buku <span class="text-danger">*</span></label>
+            <input type="text" id="book-title" class="form-control" placeholder="Contoh: Pemrograman Web Modern" required>
+          </div>
+
+          <div class="form-group">
+            <label for="book-author">Pengarang / Penulis <span class="text-danger">*</span></label>
+            <input type="text" id="book-author" class="form-control" placeholder="Contoh: Budi Raharjo" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-half">
+              <label for="book-category">Kategori <span class="text-danger">*</span></label>
+              <input type="text" id="book-category" class="form-control" placeholder="Contoh: Teknologi" required>
+            </div>
+            <div class="form-group col-half">
+              <label for="book-year">Tahun Terbit <span class="text-danger">*</span></label>
+              <input type="number" id="book-year" class="form-control" min="1900" max="2099" placeholder="2024" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-book-modal">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-book">Simpan Data Buku</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: BORROW CONFIRMATION (MAHASISWA) -->
+  <div id="modal-borrow-confirm" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Konfirmasi Peminjaman Buku</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-borrow-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Anda akan melakukan peminjaman buku berikut:</p>
+        <div class="confirm-book-box">
+          <h4 id="confirm-book-title">Judul Buku</h4>
+          <p id="confirm-book-author" class="text-muted">Pengarang: -</p>
+          <div class="confirm-meta-row">
+            <div>
+              <span class="meta-label">Tanggal Pinjam:</span>
+              <strong id="confirm-borrow-date">-</strong>
+            </div>
+            <div>
+              <span class="meta-label">Batas Kembali (7 Hari):</span>
+              <strong id="confirm-due-date" class="text-primary">-</strong>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info">
+          <strong>Perhatian:</strong> Batas pengembalian buku adalah tepat 7 hari kalender. Pastikan mengembalikan buku tepat waktu ke Pengurus Perpustakaan.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-borrow">Batal</button>
+        <button type="button" class="btn btn-success" id="btn-execute-borrow">Setujui & Pinjam Buku</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

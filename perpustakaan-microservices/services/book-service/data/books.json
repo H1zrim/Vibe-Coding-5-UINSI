@@ -1,0 +1,42 @@
+[
+  {
+    "id": "BK-001",
+    "title": "Algoritma & Struktur Data Lanjut",
+    "author": "Rinaldi Munir",
+    "category": "Ilmu Komputer",
+    "year": 2022,
+    "status": "Tersedia"
+  },
+  {
+    "id": "BK-002",
+    "title": "Pemrograman Web Modern Berbasis Komponen",
+    "author": "Budi Raharjo",
+    "category": "Teknologi",
+    "year": 2023,
+    "status": "Tersedia"
+  },
+  {
+    "id": "BK-003",
+    "title": "Basis Data & Perancangan Sistem Relasional",
+    "author": "Fathansyah",
+    "category": "Basis Data",
+    "year": 2021,
+    "status": "Dipinjam"
+  },
+  {
+    "id": "BK-004",
+    "title": "Rekayasa Perangkat Lunak: Pendekatan Praktisi",
+    "author": "Roger S. Pressman",
+    "category": "Rekayasa",
+    "year": 2020,
+    "status": "Tersedia"
+  },
+  {
+    "id": "BK-005",
+    "title": "Pengantar Kecerdasan Buatan dan Robotika",
+    "author": "Suyanto",
+    "category": "Kecerdasan Buatan",
+    "year": 2024,
+    "status": "Tersedia"
+  }
+]
