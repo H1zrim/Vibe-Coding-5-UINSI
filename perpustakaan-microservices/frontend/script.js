@@ -221,14 +221,7 @@ const UI = {
   },
 
   bindEvents() {
-    // Demo User Quick Click Login Buttons
-    document.querySelectorAll('.btn-demo').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const username = btn.dataset.user;
-        // Password default untuk semua akun demo adalah "123"
-        await this.handleLogin(username, '123');
-      });
-    });
+    // Demo buttons removed — registration form will handle new visitors.
 
     // Manual Login Form Submission
     const loginForm = document.getElementById('login-form');
@@ -239,6 +232,49 @@ const UI = {
         const passwordInput = document.getElementById('login-password').value.trim();
         const success = await this.handleLogin(usernameInput, passwordInput);
         if (success) loginForm.reset();
+      });
+    }
+
+    // Auth view switches (pengurus vs pengunjung)
+    const btnPengurus = document.getElementById('show-pengurus-login');
+    const btnPengunjung = document.getElementById('show-pengunjung-login');
+    if (btnPengurus) btnPengurus.addEventListener('click', () => {
+      document.getElementById('login-username').placeholder = 'pengurus';
+      document.getElementById('login-password').placeholder = 'Password pengurus';
+      showToast('Mode: Login Pengurus', 'info');
+    });
+    if (btnPengunjung) btnPengunjung.addEventListener('click', () => {
+      document.getElementById('login-username').placeholder = 'email atau username pengunjung';
+      document.getElementById('login-password').placeholder = 'Password pengunjung';
+      showToast('Mode: Login Pengunjung', 'info');
+    });
+
+    // Registration Form Submission (pengunjung)
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('reg-username').value.trim();
+        const password = document.getElementById('reg-password').value.trim();
+        const name = document.getElementById('reg-name').value.trim();
+        const nim = document.getElementById('reg-nim').value.trim();
+        if (!username || !password || !name) {
+          showToast('Username, password, dan nama wajib diisi.', 'danger');
+          return;
+        }
+        try {
+          const newUser = await apiRequest(API_CONFIG.USER_SERVICE, '/api/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({ username, password, name, nim })
+          });
+          // Auto-login after registration
+          SessionService.save(newUser);
+          showToast('Registrasi berhasil — Anda sekarang masuk.', 'success');
+          await DataLoader.loadAll();
+          this.render();
+        } catch (err) {
+          showToast(err.message || 'Gagal registrasi.', 'danger');
+        }
       });
     }
 

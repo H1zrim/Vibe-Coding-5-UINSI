@@ -104,6 +104,37 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, toPublicUser(user));
     }
 
+    // POST /api/auth/register -> buat akun baru untuk pengunjung (role: mahasiswa)
+    if (pathname === '/api/auth/register' && req.method === 'POST') {
+      const body = await readBody(req);
+      // Support both older fields and new registration fields (email, phone, address, name)
+      const username = body.username || (body.email ? String(body.email).toLowerCase() : null);
+      const password = body.password;
+      const name = body.name || body.fullname || body.email || 'Pengunjung';
+      const nim = body.nim;
+      const email = body.email || null;
+      const phone = body.phone || body.hp || null;
+      const address = body.address || body.alamat || null;
+
+      if (!username || !password) {
+        return sendJson(res, 400, { message: 'Email (atau username) dan password wajib diisi.' });
+      }
+      const users = readUsers();
+      const exists = users.some(u => u.username.toLowerCase() === String(username).toLowerCase());
+      if (exists) {
+        return sendJson(res, 409, { message: 'Username/email sudah digunakan.' });
+      }
+      const safeId = `u-${String(username).replace(/[^a-z0-9]/gi, '')}`;
+      const newUser = { id: safeId, username, password, name, role: 'mahasiswa' };
+      if (nim) newUser.nim = nim;
+      if (email) newUser.email = email;
+      if (phone) newUser.phone = phone;
+      if (address) newUser.address = address;
+      users.push(newUser);
+      writeUsers(users);
+      return sendJson(res, 201, toPublicUser(newUser));
+    }
+
     return sendJson(res, 404, { message: 'Endpoint tidak ditemukan di user-service.' });
   } catch (err) {
     console.error('[user-service] error:', err);

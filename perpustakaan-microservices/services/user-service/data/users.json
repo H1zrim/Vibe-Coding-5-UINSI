@@ -1,25 +1,9 @@
 [
   {
-    "id": "u-admin",
-    "username": "admin",
-    "password": "123",
-    "name": "Bambang Sudarsono, S.Kom.",
+    "id": "u-pengurus",
+    "username": "pengurus",
+    "password": "12345",
+    "name": "Pengurus Default",
     "role": "pengurus"
-  },
-  {
-    "id": "u-mhs1",
-    "username": "mhs1",
-    "password": "123",
-    "name": "Budi Santoso",
-    "nim": "210001001",
-    "role": "mahasiswa"
-  },
-  {
-    "id": "u-mhs2",
-    "username": "mhs2",
-    "password": "123",
-    "name": "Siti Rahma",
-    "nim": "210001002",
-    "role": "mahasiswa"
   }
 ]

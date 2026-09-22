@@ -54,29 +54,12 @@
             </svg>
           </div>
           <h2>Masuk ke Sistem Perpustakaan</h2>
-          <p>Pilih peran Anda atau gunakan akun simulasi cepat di bawah untuk langsung mencoba prototipe.</p>
+          <p>Pilih peran Anda. Untuk pengunjung gunakan form registrasi atau link ke halaman registrasi.</p>
         </div>
-
-        <!-- Quick Demo Switcher -->
-        <div class="demo-role-box">
-          <p class="demo-title">Pilihan Cepat Masuk (Simulasi Akun Demo):</p>
-          <div class="demo-buttons-grid">
-            <button type="button" class="btn-demo" data-user="admin">
-              <div class="demo-role-tag role-admin">Pengurus (Admin)</div>
-              <strong>Bambang Sudarsono</strong>
-              <span>Akses penuh: Kelola Buku & Transaksi</span>
-            </button>
-            <button type="button" class="btn-demo" data-user="mhs1">
-              <div class="demo-role-tag role-student">Mahasiswa 1</div>
-              <strong>Budi Santoso</strong>
-              <span>NIM: 210001001 (Ada riwayat pinjam)</span>
-            </button>
-            <button type="button" class="btn-demo" data-user="mhs2">
-              <div class="demo-role-tag role-student">Mahasiswa 2</div>
-              <strong>Siti Rahma</strong>
-              <span>NIM: 210001002 (Akun baru / kuota penuh)</span>
-            </button>
-          </div>
+        <div class="auth-switcher">
+          <button id="show-pengurus-login" class="btn btn-outline-secondary">Login Pengurus</button>
+          <button id="show-pengunjung-login" class="btn btn-outline-secondary">Login Pengunjung</button>
+          <a href="register.html" class="btn btn-primary">Registrasi Pengunjung</a>
         </div>
 
         <div class="divider"><span>atau masuk dengan kredensial</span></div>
