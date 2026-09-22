@@ -3,9 +3,32 @@ declare(strict_types=1);
 
 const APP_NAME = 'SIPERPU';
 const BASE_PATH = __DIR__ . '/../../';
-const STORAGE_FILE = BASE_PATH . 'storage/data.json';
+const SQLITE_FILE = BASE_PATH . 'storage/siperpu.sqlite';
+const GOOGLE_CLIENT_ID = '506920892925-jfnhoc0v5drltnqju295r3ib6se9asdc.apps.googleusercontent.com';
 const MAX_ACTIVE_BORROW = 3;
 const BORROW_DAYS = 7;
+
+function databasePdo(): PDO
+{
+    static $pdo;
+
+    if ($pdo instanceof PDO) {
+        return $pdo;
+    }
+
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+    $directory = dirname(SQLITE_FILE);
+    if (!is_dir($directory)) {
+        mkdir($directory, 0775, true);
+    }
+    $pdo = new PDO('sqlite:' . SQLITE_FILE, null, null, $options);
+
+    return $pdo;
+}
 
 function redirect(string $url = 'index.php?page=dashboard'): never
 {

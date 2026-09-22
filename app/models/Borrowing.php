@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 final class Borrowing
 {
-    public function __construct(private JsonDatabase $db) {}
+    public function __construct(private DatabaseInterface $db) {}
 
     public function all(?string $userId = null): array
     {

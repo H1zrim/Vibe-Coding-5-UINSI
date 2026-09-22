@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 final class User
 {
-    public function __construct(private JsonDatabase $db) {}
+    public function __construct(private DatabaseInterface $db) {}
 
     public function findByLogin(string $login, string $password): ?array
     {
@@ -41,6 +41,37 @@ final class User
                 'id' => 'u-' . preg_replace('/[^a-z0-9]/i', '', $username) . '-' . time(),
                 'username' => $username, 'password' => password_hash($input['password'], PASSWORD_DEFAULT),
                 'name' => trim($input['name']), 'nim' => trim($input['nim'] ?? ''), 'role' => 'mahasiswa'
+            ];
+            $data['users'][] = $user;
+            unset($user['password']);
+            return $user;
+        });
+    }
+
+    public function findOrCreateGoogle(array $profile): array
+    {
+        $email = strtolower(trim((string) $profile['email']));
+        foreach ($this->db->read()['users'] as $user) {
+            if (strcasecmp($user['username'], $email) === 0) {
+                unset($user['password']);
+                return $user;
+            }
+        }
+
+        return $this->db->transaction(function (array &$data) use ($email, $profile): array {
+            foreach ($data['users'] as $user) {
+                if (strcasecmp($user['username'], $email) === 0) {
+                    unset($user['password']);
+                    return $user;
+                }
+            }
+            $user = [
+                'id' => 'google-' . preg_replace('/[^a-z0-9]/i', '', (string) ($profile['sub'] ?? $email)),
+                'username' => $email,
+                'password' => password_hash(bin2hex(random_bytes(24)), PASSWORD_DEFAULT),
+                'name' => trim((string) ($profile['name'] ?? $email)),
+                'role' => 'mahasiswa',
+                'nim' => null,
             ];
             $data['users'][] = $user;
             unset($user['password']);

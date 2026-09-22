@@ -1,5 +1,45 @@
 # Diagram Arsitektur
 
+> **Status:** Dokumen microservice Node.js di bawah ini adalah arsip implementasi lama.
+> Runtime utama saat ini adalah aplikasi PHP Native MVC di root repository. Template service
+> baru tersedia di `services/_template` dan mengikuti kontrak HTTP JSON yang sama.
+
+## Sesudah (PHP Native MVC)
+
+```mermaid
+flowchart TB
+    Browser["Browser"] --> FrontController["index.php<br/>Front Controller"]
+    FrontController --> Bootstrap["app/bootstrap.php<br/>Autoload + Container"]
+    Bootstrap --> Controllers["app/controllers<br/>AuthController + LibraryController"]
+    Controllers --> Models["app/models<br/>User + Book + Borrowing"]
+    Models --> Database[("storage/data.json<br/>Single application data store")]
+    Services["services/<nama-service><br/>PHP service mandiri"] --> ServiceStorage[("storage service sendiri")]
+    Services -. "HTTP JSON bila diperlukan" .-> FrontController
+```
+
+Pemilihan PHP sebagai runtime utama menghilangkan frontend HTML/JavaScript terpisah dan
+duplikasi aturan domain di browser. `app/bootstrap.php` menjadi satu tempat perakitan
+dependensi aplikasi, sedangkan setiap service tambahan tetap terisolasi pada foldernya
+sendiri dan tidak boleh membaca storage service lain secara langsung.
+
+## Template Pengembangan Service
+
+Service baru dimulai dari struktur berikut:
+
+```text
+services/<nama-service>/
+├── config/config.php
+├── public/index.php
+├── src/Service.php
+├── storage/.gitkeep
+├── tests/.gitkeep
+└── README.md
+```
+
+Folder `services/_template` sengaja hanya berisi health check dan fallback 404. Route,
+model, storage, dan pengujian domain ditambahkan oleh service pemiliknya sehingga perubahan
+antar-service dapat dikembangkan serta di-merge secara independen.
+
 ## Sebelum (Monolith - Client Side Only)
 
 Proyek sebelumnya adalah aplikasi **client-side murni**: satu file HTML, satu file CSS,
@@ -23,7 +63,7 @@ flowchart TB
 - Tidak ada pemisahan tanggung jawab: satu file JS menangani autentikasi, katalog buku, dan transaksi sekaligus.
 - Tidak ada API yang bisa dipakai ulang oleh aplikasi lain (mis. aplikasi mobile).
 
-## Sesudah (Microservice)
+## Sesudah (Microservice Node.js - Arsip)
 
 Aplikasi dipecah menjadi **3 microservice independen**, masing-masing dengan database
 (file JSON) miliknya sendiri, berkomunikasi lewat REST API (JSON over HTTP). Frontend

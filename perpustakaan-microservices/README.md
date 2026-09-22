@@ -1,4 +1,7 @@
-# SIPERPU — Sistem Peminjaman Buku Perpustakaan (Versi Microservice)
+# SIPERPU — Sistem Peminjaman Buku Perpustakaan (Arsip Microservice Node.js)
+
+> Arsip implementasi Node.js lama. Runtime aktif berada di root repository dan menggunakan
+> PHP Native MVC. Untuk menambah service PHP, gunakan `../services/_template`.
 
 Pengembangan lanjutan dari proyek kelompok sebelumnya (aplikasi client-side dengan
 `localStorage`) menjadi aplikasi berbasis **microservice**. User Story dan Acceptance
