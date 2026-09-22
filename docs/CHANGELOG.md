@@ -5,6 +5,40 @@
 Dokumen ini mencatat perubahan arsitektur dan fitur yang dikerjakan sebelum rilis
 `siperpu-v0.3`.
 
+## Prompt AI yang Digunakan
+
+Prompt berikut digunakan sebagai instruksi kerja selama pengembangan dan dapat dipakai
+sebagai konteks saat melanjutkan proyek:
+
+### Refactor arsitektur
+
+> Rapikan arsitektur SIPERPU agar tidak ada redundansi, gunakan PHP Native pada seluruh lini
+> termasuk frontend, dan sediakan tempat serta template agar microservice baru mudah
+> dikembangkan dan di-merge.
+
+### Migrasi database dan perbaikan dashboard
+
+> Perbaiki error undefined variable pada dashboard, lalu gunakan database portable yang mudah
+> dijalankan setelah project dibuka dari GitHub. Pertahankan model dan aturan bisnis yang ada,
+> tambahkan migrasi tabel serta seed data otomatis.
+
+### Login Google
+
+> Tambahkan login melalui akun Google pada tampilan login utama. Gunakan Google Identity
+> Services, validasi credential di backend, buat akun mahasiswa berdasarkan email Google yang
+> terverifikasi, dan sediakan fallback jika Client ID belum dikonfigurasi.
+
+### Penyempurnaan tampilan
+
+> Pelajari token warna CSS berikut dan terapkan primary blue yang lebih terang pada tampilan
+> SIPERPU. Pertahankan layout, responsive behavior, dan keterbacaan komponen yang sudah ada.
+
+### Dokumentasi dan rilis
+
+> Dokumentasikan seluruh perbaikan bug dan penyempurnaan fitur, lakukan validasi PHP serta
+> smoke test halaman login, kemudian commit perubahan dengan pesan yang jelas dan push ke
+> branch utama serta branch versi rilis.
+
 ### Arsitektur dan database
 
 - Menyatukan bootstrap aplikasi PHP melalui `app/bootstrap.php` dan autoload class.
