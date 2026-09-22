@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SIPERPU</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="google-auth.css">
+</head>
+<body class="google-dashboard-page">
+  <main class="google-dashboard-shell">
+    <header class="google-dashboard-header">
+      <a class="google-dashboard-brand" href="dashboard.html">SIPERPU</a>
+      <button id="google-logout-button" class="btn btn-outline-danger" type="button">Keluar</button>
+    </header>
+    <section class="google-dashboard-card" aria-labelledby="dashboard-title">
+      <div class="google-profile-photo-wrap">
+        <img id="google-profile-photo" class="google-profile-photo" alt="Foto profil Google">
+      </div>
+      <p class="google-eyebrow">Dashboard pengguna</p>
+      <h1 id="dashboard-title">Halo, <span id="google-profile-name"></span></h1>
+      <p id="google-profile-email" class="google-profile-email"></p>
+      <p class="google-dashboard-copy">Login Google berhasil. Halaman ini siap dihubungkan ke fitur perpustakaan berikutnya.</p>
+    </section>
+  </main>
+
+  <script src="google-auth.js"></script>
+  <script>
+    const googleUser = protectGoogleDashboard();
+    if (googleUser) {
+      document.getElementById('google-profile-name').textContent = googleUser.name;
+      document.getElementById('google-profile-email').textContent = googleUser.email;
+      const photo = document.getElementById('google-profile-photo');
+      if (googleUser.picture) {
+        photo.src = googleUser.picture;
+      } else {
+        photo.remove();
+      }
+    }
+    document.getElementById('google-logout-button').addEventListener('click', logoutGoogle);
+  </script>
+</body>
+</html>
