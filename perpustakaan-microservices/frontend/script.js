@@ -490,6 +490,9 @@ const UI = {
     this.renderSessionNav();
     this.populateCategoryFilters();
 
+    // Render sidebar according to current user role
+    this.renderSidebar();
+
     const authSection = document.getElementById('auth-section');
     const adminSection = document.getElementById('admin-section');
     const studentSection = document.getElementById('student-section');
@@ -507,10 +510,149 @@ const UI = {
       adminSection.classList.remove('hidden');
       studentSection.classList.add('hidden');
       this.renderAdminDashboard();
+      // ensure admin default view is Beranda
+      this.showView('pengurus', 'beranda');
     } else if (AppState.currentUser.role === 'mahasiswa') {
       adminSection.classList.add('hidden');
       studentSection.classList.remove('hidden');
       this.renderStudentDashboard();
+      // ensure student default view is Beranda
+      this.showView('mahasiswa', 'beranda');
+    }
+  },
+
+  // Render sidebar menu based on role
+  renderSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const menu = document.getElementById('sidebar-menu');
+    const userInfo = document.getElementById('sidebar-user');
+    const sidebarName = document.getElementById('sidebar-user-name');
+    const sidebarRole = document.getElementById('sidebar-user-role');
+
+    if (!sidebar || !menu) return;
+
+    // If no user logged in, hide sidebar
+    if (!AppState.currentUser) {
+      sidebar.classList.add('hidden');
+      userInfo.classList.add('hidden');
+      menu.innerHTML = '';
+      return;
+    }
+
+    sidebar.classList.remove('hidden');
+    userInfo.classList.remove('hidden');
+    sidebarName.textContent = AppState.currentUser.name || AppState.currentUser.username || '-';
+    sidebarRole.textContent = AppState.currentUser.role === 'pengurus' ? 'Pengurus' : 'Mahasiswa';
+
+    // Build menu items depending on role
+    const role = AppState.currentUser.role;
+    let items = [];
+    if (role === 'pengurus') {
+      items = [
+        { id: 'beranda', label: 'Beranda' },
+        { id: 'manajemen-buku', label: 'Manajemen Data Buku' },
+        { id: 'status-peminjaman', label: 'Status Peminjaman' }
+      ];
+    } else {
+      items = [
+        { id: 'beranda', label: 'Beranda' },
+        { id: 'buku-dipinjam', label: 'Buku yang Dipinjam' },
+        { id: 'daftar-buku', label: 'Daftar Buku' },
+        { id: 'status-peminjaman', label: 'Status Peminjaman' },
+        { id: 'data-diri', label: 'Data Diri' }
+      ];
+    }
+
+    menu.innerHTML = items.map(it => `<button data-id="${it.id}" class="${it.id==='beranda'?'active':''}">${it.label}</button>`).join('');
+
+    // Bind click handlers
+    menu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        menu.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const viewId = btn.dataset.id;
+        if (role === 'pengurus') this.showView('pengurus', viewId);
+        else this.showView('mahasiswa', viewId);
+      });
+    });
+
+    // Bind sidebar logout (use onclick to avoid duplicate listeners)
+    const sidebarLogout = document.getElementById('sidebar-logout');
+    if (sidebarLogout) sidebarLogout.onclick = () => { SessionService.save(null); this.render(); };
+  },
+
+  // Show view for role: pengurus|mahasiswa and viewId
+  showView(role, viewId) {
+    // Admin views
+    if (role === 'pengurus') {
+      const adminSection = document.getElementById('admin-section');
+      adminSection.classList.remove('hidden');
+      document.getElementById('student-section').classList.add('hidden');
+
+      if (viewId === 'beranda') {
+        // Default admin dashboard
+        // ensure admin-books-tab active state reset
+        document.querySelectorAll('#admin-section .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('#admin-section .tab-btn[data-tab="admin-books-tab"]')?.classList.add('active');
+        document.getElementById('admin-books-tab').classList.remove('hidden');
+        document.getElementById('admin-books-tab').classList.add('active');
+        document.getElementById('admin-borrowings-tab').classList.add('hidden');
+        this.renderAdminDashboard();
+      } else if (viewId === 'manajemen-buku') {
+        document.querySelectorAll('#admin-section .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('#admin-section .tab-btn[data-tab="admin-books-tab"]')?.classList.add('active');
+        document.getElementById('admin-books-tab').classList.remove('hidden');
+        document.getElementById('admin-books-tab').classList.add('active');
+        document.getElementById('admin-borrowings-tab').classList.add('hidden');
+        this.renderAdminBooksTable();
+      } else if (viewId === 'status-peminjaman') {
+        document.querySelectorAll('#admin-section .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('#admin-section .tab-btn[data-tab="admin-borrowings-tab"]')?.classList.add('active');
+        document.getElementById('admin-borrowings-tab').classList.remove('hidden');
+        document.getElementById('admin-borrowings-tab').classList.add('active');
+        document.getElementById('admin-books-tab').classList.add('hidden');
+        this.renderAdminBorrowingsTable();
+      }
+      return;
+    }
+
+    // Mahasiswa views
+    if (role === 'mahasiswa') {
+      const studentSection = document.getElementById('student-section');
+      studentSection.classList.remove('hidden');
+      document.getElementById('admin-section').classList.add('hidden');
+
+      // Map viewId to tab ids
+      if (viewId === 'beranda' || viewId === 'daftar-buku') {
+        // show catalog tab
+        document.querySelectorAll('#student-section .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('#student-section .tab-btn[data-tab="student-catalog-tab"]')?.classList.add('active');
+        document.getElementById('student-catalog-tab').classList.remove('hidden');
+        document.getElementById('student-catalog-tab').classList.add('active');
+        document.getElementById('student-my-borrowings-tab').classList.add('hidden');
+        document.getElementById('student-profile-tab')?.classList.add('hidden');
+        this.renderStudentDashboard();
+      } else if (viewId === 'buku-dipinjam' || viewId === 'status-peminjaman') {
+        document.querySelectorAll('#student-section .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('#student-section .tab-btn[data-tab="student-my-borrowings-tab"]')?.classList.add('active');
+        document.getElementById('student-my-borrowings-tab').classList.remove('hidden');
+        document.getElementById('student-my-borrowings-tab').classList.add('active');
+        document.getElementById('student-catalog-tab').classList.add('hidden');
+        document.getElementById('student-profile-tab')?.classList.add('hidden');
+        this.renderStudentBorrowingsTable();
+      } else if (viewId === 'data-diri') {
+        // ensure profile tab exists
+        document.querySelectorAll('#student-section .tab-btn').forEach(b => b.classList.remove('active'));
+        // create or activate profile tab button
+        const profileBtn = document.querySelector('#student-section .tab-btn[data-tab="student-profile-tab"]');
+        if (profileBtn) profileBtn.classList.add('active');
+        document.getElementById('student-profile-tab')?.classList.remove('hidden');
+        document.getElementById('student-profile-tab')?.classList.add('active');
+        document.getElementById('student-catalog-tab').classList.add('hidden');
+        document.getElementById('student-my-borrowings-tab').classList.add('hidden');
+        this.renderStudentProfile();
+      }
+      return;
     }
   },
 
@@ -645,8 +787,15 @@ const UI = {
 
     const statusFilter = document.getElementById('admin-borrowing-status-filter')?.value || 'ALL';
 
-    const filtered = AppState.borrowings.filter(b => {
+    let filtered = AppState.borrowings.filter(b => {
       return statusFilter === 'ALL' || b.status === statusFilter;
+    });
+
+    // Sort by dueDate (deadline) ascending
+    filtered = filtered.slice().sort((a, b) => {
+      const da = a.dueDate ? new Date(a.dueDate) : new Date(0);
+      const db = b.dueDate ? new Date(b.dueDate) : new Date(0);
+      return da - db;
     });
 
     if (filtered.length === 0) {
@@ -655,9 +804,28 @@ const UI = {
     }
 
     tbody.innerHTML = filtered.map(trx => {
-      const statusBadge = trx.status === 'Dipinjam'
-        ? '<span class="badge badge-dipinjam">Dipinjam</span>'
-        : '<span class="badge badge-dikembalikan">Dikembalikan</span>';
+      // Status badge + deadline indicators
+      let statusBadge = '';
+      if (trx.status === 'Dipinjam') {
+        statusBadge = '<span class="badge badge-dipinjam">Dipinjam</span>';
+      } else {
+        statusBadge = '<span class="badge badge-dikembalikan">Dikembalikan</span>';
+      }
+
+      // Deadline parsing for visual indicators
+      let deadlineIndicator = '';
+      if (trx.dueDate) {
+        const now = new Date();
+        const due = new Date(trx.dueDate);
+        const diffDays = Math.ceil((due - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000*60*60*24));
+        if (trx.status === 'Dipinjam') {
+          if (due < new Date()) {
+            deadlineIndicator = ' <span class="badge" style="background:#fde68a;color:var(--warning-text);border:1px solid var(--warning-border);">Terlambat</span>';
+          } else if (diffDays <= 2) {
+            deadlineIndicator = ' <span class="badge" style="background:#fff7ed;color:var(--warning-text);border:1px solid var(--warning-border);">Segera jatuh tempo</span>';
+          }
+        }
+      }
 
       const actionBtn = trx.status === 'Dipinjam'
         ? `<button class="btn-action-return" onclick="UI.handleReturnBook('${trx.id}')">Tandai Dikembalikan</button>`
@@ -672,7 +840,7 @@ const UI = {
             <small class="text-muted">NIM: ${trx.userNim}</small>
           </td>
           <td>${trx.borrowDate}</td>
-          <td><strong class="text-primary">${trx.dueDate}</strong></td>
+          <td><strong class="text-primary">${trx.dueDate}</strong>${deadlineIndicator}</td>
           <td>${trx.returnDate || '-'}</td>
           <td>${statusBadge}</td>
           <td class="text-center">${actionBtn}</td>
@@ -731,6 +899,16 @@ const UI = {
 
     this.renderStudentBooksGrid();
     this.renderStudentBorrowingsTable();
+    this.renderStudentProfile();
+  },
+
+  renderStudentProfile() {
+    const user = AppState.currentUser;
+    if (!user) return;
+    document.getElementById('profile-name') && (document.getElementById('profile-name').textContent = user.name || '-');
+    document.getElementById('profile-nim') && (document.getElementById('profile-nim').textContent = user.nim || '-');
+    document.getElementById('profile-username') && (document.getElementById('profile-username').textContent = user.username || '-');
+    document.getElementById('profile-role') && (document.getElementById('profile-role').textContent = user.role || '-');
   },
 
   renderStudentBooksGrid() {
