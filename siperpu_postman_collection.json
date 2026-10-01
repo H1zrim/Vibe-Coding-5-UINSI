@@ -1,0 +1,370 @@
+{
+  "info": {
+    "_postman_id": "siperpu-api-v2-collection",
+    "name": "SIPERPU - Library API Collection (Laravel 12 + MySQL)",
+    "description": "Koleksi Postman resmi untuk Sistem Informasi Perpustakaan (SIPERPU). Menggunakan Single Gateway Auth (Sanctum) dengan verifikasi otoritas role (Pengurus vs Mahasiswa).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "student_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00. System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "01. Auth (Single Gateway)",
+      "item": [
+        {
+          "name": "Login sebagai Pengurus (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('admin_token', jsonData.data.token);",
+                  "    console.log('Admin token saved successfully!');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login sebagai Mahasiswa (Budi)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('student_token', jsonData.data.token);",
+                  "    console.log('Student token saved successfully!');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mhs1\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register Mahasiswa Baru (Role Guard)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rian Pratama\",\n  \"username\": \"rian\",\n  \"nim\": \"210001005\",\n  \"password\": \"12345\",\n  \"password_confirmation\": \"12345\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile / Session Info (GET /me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Books (Katalog & CRUD)",
+      "item": [
+        {
+          "name": "Get Semua Buku (Umum / Auth)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{student_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/books",
+              "host": ["{{base_url}}"],
+              "path": ["books"]
+            }
+          }
+        },
+        {
+          "name": "Filter Buku (Search & Kategori)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{student_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/books?search=Algoritma&category=Ilmu Komputer",
+              "host": ["{{base_url}}"],
+              "path": ["books"],
+              "query": [
+                { "key": "search", "value": "Algoritma" },
+                { "key": "category", "value": "Ilmu Komputer" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detail Buku by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{student_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/books/BK-001",
+              "host": ["{{base_url}}"],
+              "path": ["books", "BK-001"]
+            }
+          }
+        },
+        {
+          "name": "Tambah Buku (Pengurus Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cloud Architecture & DevOps Essentials\",\n  \"author\": \"Danang Wijaya\",\n  \"category\": \"Cloud Computing\",\n  \"year\": 2025\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/books",
+              "host": ["{{base_url}}"],
+              "path": ["books"]
+            }
+          }
+        },
+        {
+          "name": "Update Data Buku (Pengurus Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cloud Architecture, DevOps & Security\",\n  \"author\": \"Danang Wijaya\",\n  \"category\": \"Cloud Computing\",\n  \"year\": 2025\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/books/BK-001",
+              "host": ["{{base_url}}"],
+              "path": ["books", "BK-001"]
+            }
+          }
+        },
+        {
+          "name": "Hapus Buku (Pengurus Only - Ditolak jika Dipinjam)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/books/BK-005",
+              "host": ["{{base_url}}"],
+              "path": ["books", "BK-005"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Sirkulasi - Mahasiswa (Student Authority)",
+      "item": [
+        {
+          "name": "Pinjam Buku (Mahasiswa Only - RULE 01, 02, 03)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{student_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"book_id\": \"BK-001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/borrowings/borrow",
+              "host": ["{{base_url}}"],
+              "path": ["borrowings", "borrow"]
+            }
+          }
+        },
+        {
+          "name": "Riwayat Peminjaman Pribadi (Mahasiswa Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{student_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/borrowings/my",
+              "host": ["{{base_url}}"],
+              "path": ["borrowings", "my"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Sirkulasi - Pengurus (Admin Authority)",
+      "item": [
+        {
+          "name": "Kembalikan Buku (Pengurus Only - RULE 04 Auto Sync)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/borrowings/TRX-2026-00001/return",
+              "host": ["{{base_url}}"],
+              "path": ["borrowings", "TRX-2026-00001", "return"]
+            }
+          }
+        },
+        {
+          "name": "Log Seluruh Transaksi Peminjaman (Pengurus Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/borrowings/all?status=ALL",
+              "host": ["{{base_url}}"],
+              "path": ["borrowings", "all"],
+              "query": [
+                { "key": "status", "value": "ALL" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ringkasan Statistik Dashboard (Pengurus Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/stats",
+              "host": ["{{base_url}}"],
+              "path": ["dashboard", "stats"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
