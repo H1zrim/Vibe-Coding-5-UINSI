@@ -1,50 +1,42 @@
-# SIPERPU - MVC PHP Native
+# SIPERPU
 
-Aplikasi perpustakaan dengan pola MVC menggunakan PHP Native dan database SQLite.
+SIPERPU adalah aplikasi peminjaman buku dengan React SPA dan REST API Laravel. [standar.md](standar.md)
+adalah acuan resmi untuk aturan bisnis, endpoint, dependensi, dan struktur aplikasi.
 
-## Menjalankan
+## Arsitektur
 
-Pastikan PHP 8 atau lebih baru dengan extension `pdo_sqlite` aktif, lalu jalankan dari root proyek:
+- Frontend: React + Vite di `frontend/`, default `http://localhost:5173`.
+- Backend: Laravel 12 + Sanctum di `backend/`, default `http://localhost:8000`.
+- Database: MySQL atau MariaDB melalui PDO MySQL.
+- Pengujian backend: Pest.
 
-```bash
-php -S localhost:8000
+## Menjalankan Lokal
+
+Siapkan PHP 8.2+, Composer, Node.js, dan MySQL/MariaDB. Buat database `siperpu_db`, lalu siapkan backend:
+
+```powershell
+cd backend
+composer install
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Buka `http://localhost:8000` di browser.
+Jalankan frontend di terminal lain:
 
-## Struktur MVC
+```powershell
+cd frontend
+npm install
+npm run dev
+```
 
-- `index.php` - front controller dan routing aplikasi
-- `app/config` - konfigurasi aplikasi dan koneksi PDO SQLite
-- `app/core/SqliteDatabase.php` - migrasi tabel dan adapter database
-- `app/controllers` - alur request dan hak akses
-- `app/models` - autentikasi, buku, dan peminjaman
-- `app/views` - tampilan PHP
-- `assets` - stylesheet
-- `database/schema.sql` - schema referensi SQLite
-- `storage/siperpu.sqlite` - database lokal yang dibuat otomatis (diabaikan Git)
+Frontend menggunakan API `http://localhost:8000/api` secara default. Atur `VITE_API_BASE_URL` bila backend berjalan pada alamat lain.
 
-Database SQLite dan tabelnya dibuat otomatis saat aplikasi pertama kali dibuka. Tidak diperlukan
-server database atau konfigurasi kredensial, sehingga aplikasi lebih mudah dijalankan setelah
-di-clone dari GitHub.
+Seeder lokal membuat satu akun pengurus (`admin` / `123`) dan katalog awal. Ganti kredensial tersebut sebelum digunakan di luar lokal.
 
-Untuk mengaktifkan login Google, isi `GOOGLE_CLIENT_ID` di `app/config/config.php` dengan OAuth
-Client ID bertipe Web dari Google Cloud Console. Tambahkan origin aplikasi pada Authorized
-JavaScript origins, misalnya `http://localhost:8000`. Tanpa Client ID, login username/password
-tetap tersedia dan tombol Google menampilkan pesan bahwa konfigurasi perlu dilengkapi.
+Jangan jalankan `php artisan migrate:fresh --seed` di staging atau produksi. Migration yang sudah di-merge tidak diedit; perubahan skema harus memakai migration baru.
 
-Riwayat perbaikan dan penyempurnaan lengkap tersedia di [docs/CHANGELOG.md](docs/CHANGELOG.md).
+## Direktori Legacy
 
-## Akun
-
-Mahasiswa dapat membuat akun melalui halaman registrasi. Akun pengurus dikelola melalui seed
-database atau proses administrasi aplikasi, bukan ditampilkan pada halaman login.
-
-## Pengembangan service
-
-Runtime utama dan frontend aplikasi menggunakan PHP Native. Service tambahan dikembangkan
-di folder `services/` dengan menyalin `services/_template/`; setiap service memiliki storage,
-endpoint, dan pengujian sendiri agar perubahan mudah ditinjau serta di-merge.
-
-Folder `perpustakaan-microservices` dipertahankan sebagai arsip implementasi Node.js lama,
-bukan bagian dari runtime utama.
+Direktori `app/`, `assets/`, `index.php`, `services/`, dan `perpustakaan-microservices/` adalah implementasi/eksperimen terpisah dan bukan runtime SIPERPU yang ditetapkan oleh standar saat ini. Aplikasi aktif berada di `backend/` dan `frontend/`.
