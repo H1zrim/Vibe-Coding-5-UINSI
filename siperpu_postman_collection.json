@@ -20,6 +20,11 @@
       "key": "student_token",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "borrowing_id",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -278,6 +283,21 @@
       "item": [
         {
           "name": "Pinjam Buku (Mahasiswa Only - RULE 01, 02, 03)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data && jsonData.data.borrowing && jsonData.data.borrowing.id) {",
+                  "    pm.collectionVariables.set('borrowing_id', jsonData.data.borrowing.id);",
+                  "    console.log('Borrowing ID saved dynamically:', jsonData.data.borrowing.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -325,14 +345,32 @@
               { "key": "Authorization", "value": "Bearer {{admin_token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/borrowings/TRX-2026-00001/return",
+              "raw": "{{base_url}}/borrowings/{{borrowing_id}}/return",
               "host": ["{{base_url}}"],
-              "path": ["borrowings", "TRX-2026-00001", "return"]
+              "path": ["borrowings", "{{borrowing_id}}", "return"]
             }
           }
         },
         {
           "name": "Log Seluruh Transaksi Peminjaman (Pengurus Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && Array.isArray(jsonData.data) && jsonData.data.length > 0) {",
+                  "    var active = jsonData.data.find(function(item) { return item.status === 'Dipinjam'; });",
+                  "    if (active && (!pm.collectionVariables.get('borrowing_id') || pm.collectionVariables.get('borrowing_id') === '')) {",
+                  "        pm.collectionVariables.set('borrowing_id', active.id);",
+                  "        console.log('Borrowing ID populated from circulation log:', active.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [

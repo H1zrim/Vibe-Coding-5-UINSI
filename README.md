@@ -118,11 +118,15 @@ Setiap request wajib menyertakan header:
 
 ---
 
-## 📬 Pengujian via Postman (1-Klik Impor)
+## 📬 Pengujian via Postman (1-Klik Impor & Alur Otomatis)
 
 1. Buka aplikasi **Postman**.
 2. Klik tombol **Import** (di kiri atas) lalu pilih berkas:  
-   `c:\xampp\htdocs\perpustakaan\siperpu_postman_collection.json`.
-3. Jalankan request **"Login sebagai Pengurus"** atau **"Login sebagai Mahasiswa"**.  
-   *Script Postman otomatis menyimpan token ke variabel `{{admin_token}}` dan `{{student_token}}`!*
-4. Anda dapat langsung menguji seluruh endpoint tanpa perlu menyalin token secara manual.
+   [`siperpu_postman_collection.json`](siperpu_postman_collection.json).
+3. **Autentikasi Otomatis:**
+   - Jalankan request **"01. Auth > Login sebagai Pengurus (Admin)"** atau **"Login sebagai Mahasiswa (Budi)"**.  
+   - *Test script Postman secara otomatis menyimpan token ke variabel `{{admin_token}}` dan `{{student_token}}`!*
+4. **Sirkulasi Dinamis (Acceptance Criteria):**
+   - Saat mahasiswa menjalankan request **"03. Sirkulasi > Pinjam Buku"**, Postman **otomatis menyimpan ID transaksi peminjaman** ke variabel `{{borrowing_id}}`.
+   - Saat admin menjalankan request **"04. Sirkulasi > Kembalikan Buku"**, URL otomatis menggunakan `{{borrowing_id}}` yang valid tanpa memicu 404!
+5. Anda dapat menguji seluruh 15 endpoint API secara berurutan tanpa perlu menyalin token atau UUID secara manual.

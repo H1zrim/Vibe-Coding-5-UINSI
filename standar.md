@@ -210,3 +210,4 @@ perpustakaan/
 |---|---|---|---|
 | `v1.0` | 2026-09-24 | Lead Architect | Inisialisasi awal standar monorepo Laravel 11 + React SPA. |
 | `v1.1` | 2026-09-24 | Lead Architect | Restrukturisasi SSOT: Kunci Laravel 12 + Pest, batas 5 library React (Axios, Tailwind v3, react-hot-toast), status biner per buku (hapus stock), accessor `is_overdue`, HTTP 422 seragam, role guard mass assignment, template tugas, dan roadmap terpisah. |
+| `v1.2` | 2026-10-07 | Full-Stack Engineer | Pembaruan koleksi Postman dinamis (`borrowing_id` auto-capture), rute web portal non-intrusif pada root port 8000, skrip peluncur 1-langkah (`dev.bat`/`run-dev.ps1`), serta standarisasi panduan pengujian acceptance criteria. |
