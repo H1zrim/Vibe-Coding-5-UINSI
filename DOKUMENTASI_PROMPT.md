@@ -12,6 +12,7 @@
    - [Fase 2: Eksperimen Microservices & PHP Native (Transisi)](#fase-2-eksperimen-microservices--php-native-transisi)
    - [Fase 3: Audit Kritis & Perancangan Arsitektur Standar](#fase-3-audit-kritis--perancangan-arsitektur-standar)
    - [Fase 4: Restrukturisasi, Pembersihan Non-Framework & Eksekusi Final](#fase-4-restrukturisasi-pembersihan-non-framework--eksekusi-final)
+   - [Fase 5: Streamline Fullstack, Perbaikan Dynamic Postman & Audit Otoritas API](#fase-5-streamline-fullstack-perbaikan-dynamic-postman--audit-otoritas-api)
 3. [Rekap Menyeluruh Perubahan Sistem (Changelog)](#3-rekap-menyeluruh-perubahan-sistem-changelog)
    - [A. Eliminasi File & Direktori Non-Framework](#a-eliminasi-file--direktori-non-framework)
    - [B. Migrasi Mesin Basis Data (SQLite/JSON ke MySQL)](#b-migrasi-mesin-basis-data-sqlitejson-ke-mysql)
@@ -19,6 +20,8 @@
    - [D. Penegakan 6 Aturan Bisnis Inti](#d-penegakan-6-aturan-bisnis-inti)
    - [E. Desain Ulang Frontend Client (React + Vite)](#e-desain-ulang-frontend-client-react--vite)
    - [F. Pengujian Otomatis & Alat Bantu Postman](#f-pengujian-otomatis--alat-bantu-postman)
+   - [G. Peluncur Fullstack 1-Langkah & Portal Gateway Web Non-Intrusif](#g-peluncur-fullstack-1-langkah--portal-gateway-web-non-intrusif)
+   - [H. Otomasi Dynamic Postman Collection (Eliminasi 404 Return)](#h-otomasi-dynamic-postman-collection-eliminasi-404-return)
 4. [Kesimpulan Evaluasi & Kesiapan Sistem](#4-kesimpulan-evaluasi--kesiapan-sistem)
 
 ---
@@ -109,6 +112,27 @@ Fase penerapan fisik standar ke dalam kode nyata, pengujian, dan penataan Git:
 
 ---
 
+### Fase 5: Streamline Fullstack, Perbaikan Dynamic Postman & Audit Otoritas API
+Fase penjaminan operasional fullstack, perbaikan error rute 404/401/403, penonaktifan auto-redirect, serta otomasi Postman collection:
+
+> **Prompt 15 (Pull & Analisis Awal Monorepo):**  
+> *"pull main dari proyek https://github.com/H1zrim/Vibe-Coding-5-UINSI.git lalu lakukan analisis"*
+
+> **Prompt 16 (Analisis Efektivitas .gitignore & Single Auth Pipeline):**  
+> *"analisis mengenai gitignore apakah bekerja? lalu tentang api apakah sudah sejalur mulai dari auth sehingga mendapat otoritas tertentu hingga berhasil menjalankan service yang ada"*
+
+> **Prompt 17 (Diagnosis Error 404 di Port 8000 & Permintaan 1 Streamline):**  
+> *"saat artisan serve dinyalakan. dan dibuka malah 404 not found"*  
+> *"fix kan aja agar 1 streamline fullstack biar mudah untuk uji coba web"*
+
+> **Prompt 18 (Penonaktifan Auto-Redirect & Verifikasi Kesesuaian Instruksi API):**  
+> *"yang auto ke frontend dinonaktifkan karena saya kaget tiba tiba terpindah saat di port 8000, lalu apakah intruksi api sudah sesuai"*
+
+> **Prompt 19 (Eksekusi Opsi 3 Dynamic Postman, Branch siperpu-v0.5 & Narasi WA):**  
+> *"opsi 3 bisa dilaksanakan, sembari itu push yang sekiranya perlu diubah, tetap di github https://github.com/H1zrim/Vibe-Coding-5-UINSI.git ; untuk push ini lakukan ini di branch baru 'siperpu-v0.5' juga main secara terpisah. jangan lupa dokumentasi dan promptnya dan terakhir narasi tutorial postman dari mengambil filenya menggunakan login dan tokennya sampai operasi acceptance criterianya ini untuk share ke wa group."*
+
+---
+
 ## 3. Rekap Menyeluruh Perubahan Sistem (Changelog)
 
 ### A. Eliminasi File & Direktori Non-Framework
@@ -181,6 +205,17 @@ Seluruh aturan bisnis telah diotomatisasi di level backend:
 ### F. Pengujian Otomatis & Alat Bantu Postman
 1. **Pengujian Otomatis (Pest):** 12 unit & feature test cases telah dibuat di `backend/tests/` dan **100% Lulus (41 assertions)** mencakup seluruh aturan bisnis, validasi envelope, dan otorisasi role.
 2. **Postman Collection (`siperpu_postman_collection.json`):** Berkas koleksi JSON siap impor yang dilengkapi skrip otomatis penyimpanan token ke variabel `{{admin_token}}` dan `{{student_token}}`, sehingga pengujian manual dapat dilakukan tanpa menyalin token berulang kali.
+
+### G. Peluncur Fullstack 1-Langkah & Portal Gateway Web Non-Intrusif
+1. **Pencegahan Error 404 Port 8000:** Ditambahkan rute `routes/web.php` pada Laravel yang melayani path root `/`. Rute ini menyajikan kartu portal status pengembang SIPERPU tanpa auto-redirect intrusif (pengalihan otomatis dinonaktifkan sesuai arahan pengguna agar tidak mengagetkan).
+2. **Skrip Otomasi 1-Klik (`dev.bat` dan `run-dev.ps1`):** Disediakan peluncur praktis di root yang secara otomatis memverifikasi `.env`, menyalakan Laravel API (`:8000`), dan React SPA (`:5173`) dalam terminal terpisah.
+
+---
+
+### H. Otomasi Dynamic Postman Collection (Eliminasi 404 Return)
+1. **Penyimpanan ID Peminjaman Otomatis (`borrowing_id`):** Pada request `03. Sirkulasi > Pinjam Buku`, ditambahkan test script Postman yang otomatis menangkap UUID transaksi hasil pinjam dan menyimpannya ke variabel koleksi `{{borrowing_id}}`.
+2. **Fallback Log Sirkulasi:** Pada request `04. Sirkulasi > Log Seluruh Transaksi Peminjaman`, script otomatis menyaring transaksi aktif berstatus `Dipinjam` jika `{{borrowing_id}}` belum terisi.
+3. **Endpoint Return Dinamis:** URL pengembalian buku diubah dari hardcoded dummy `TRX-2026-00001` (yang memicu error 404 Not Found) menjadi `{{base_url}}/borrowings/{{borrowing_id}}/return`. Seluruh pengujian *acceptance criteria* sirkulasi kini dapat berjalan 100% *end-to-end* secara mulus.
 
 ---
 
