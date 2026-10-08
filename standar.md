@@ -21,6 +21,7 @@ Aturan Wajib:
    - Backend: Laravel 12.x, Eloquent, Pest. DILARANG mencampur sintaks PHPUnit. DILARANG query wipe-and-reinsert table.
 4. LARANGAN FITUR DI LUAR SCOPE: Kerjakan HANYA fitur yang tertera di Bagian 4 & 5. Fitur baru hanya boleh masuk jika sudah tercantum di Bagian 7 (Roadmap).
 5. KODE LENGKAP: Tuliskan kode utuh pada file yang ditugaskan, bukan potongan komentar "// lanjutkan di sini".
+6. PROTOKOL BUG & DEBUG: Jika menemukan kendala atau melakukan proses debugging, wajib jelaskan akar masalah (root cause), solusi penanganan, serta catat pembaruannya secara sistematis ke dalam dokumen riwayat/dokumentasi.
 
 Konfirmasi pemahamanmu secara singkat, lalu sebutkan kamu siap menerima tugas pertama.
 ```
@@ -211,3 +212,4 @@ perpustakaan/
 | `v1.0` | 2026-09-24 | Lead Architect | Inisialisasi awal standar monorepo Laravel 11 + React SPA. |
 | `v1.1` | 2026-09-24 | Lead Architect | Restrukturisasi SSOT: Kunci Laravel 12 + Pest, batas 5 library React (Axios, Tailwind v3, react-hot-toast), status biner per buku (hapus stock), accessor `is_overdue`, HTTP 422 seragam, role guard mass assignment, template tugas, dan roadmap terpisah. |
 | `v1.2` | 2026-10-07 | Full-Stack Engineer | Pembaruan koleksi Postman dinamis (`borrowing_id` auto-capture), rute web portal non-intrusif pada root port 8000, skrip peluncur 1-langkah (`dev.bat`/`run-dev.ps1`), serta standarisasi panduan pengujian acceptance criteria. |
+| `v1.3` | 2026-10-08 | Lead Architect / Dev | Personalisasi protokol pengembang: Penegakan aturan pelaporan transparan dan dokumentasi wajib untuk setiap bug dan aktivitas debugging. |
