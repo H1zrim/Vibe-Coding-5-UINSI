@@ -5,8 +5,8 @@
 | Item | Isi |
 | :--- | :--- |
 | **Nama proyek** | **SIPERPU** (Sistem Informasi Peminjaman Buku Perpustakaan Terintegrasi) |
-| **Anggota (nama dan NIM)** | 1. Hizbullah (NIM: [Isi NIM Anda])<br>2. [Nama Anggota 2] (NIM: [Isi NIM])<br>3. [Nama Anggota 3] (NIM: [Isi NIM])<br>4. [Nama Anggota 4] (NIM: [Isi NIM]) |
-| **Versi dan tanggal** | v0.5 (16 Oktober 2026) |
+| **Anggota (nama dan NIM)** | 1. Hizbullah (NIM: [Isi NIM Anda])<br>2. Muhammad Rizqi Zain (2441919004)<br>3. Annisa Hasanah (2441919025)<br>4. Ananda Fitria (2441919030)<br>5. Hafizh Ashshahabah Nashiir (2441919052) |
+| **Versi dan tanggal** | v0.5 (22 Oktober 2026) |
 | **Link repository** | `https://github.com/H1zrim/Vibe-Coding-5-UINSI.git` |
 
 ---
